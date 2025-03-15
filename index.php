@@ -6,41 +6,53 @@
     <title>Gate.io Tickers</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
             margin: 0;
             padding: 20px;
+            color: #333;
         }
 
         h1 {
             text-align: center;
-            color: #333;
+            color: #2c3e50;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 30px;
         }
 
         .ticker-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 20px;
             padding: 20px;
         }
 
         .arbitrage-card {
-            background-color: #f0f8ff;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             margin-top: 20px;
             position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .arbitrage-card:hover {
+            transform: translateY(-5px);
         }
 
         .arbitrage-header {
-            font-size: 1.25rem;
-            font-weight: bold;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #34495e;
+            margin-bottom: 15px;
         }
 
         .arbitrage-body {
-            margin-top: 10px;
-            color: #555;
+            font-size: 1rem;
+            color: #7f8c8d;
+            line-height: 1.6;
         }
 
         .arbitrage-profit {
@@ -58,7 +70,7 @@
 
         .arbitrage-profit-percent {
             position: absolute;
-            top: 10px;
+            top: 15px;
             right: 20px;
             font-size: 1.1rem;
             font-weight: bold;
@@ -66,15 +78,62 @@
         }
 
         .error {
-            color: red;
+            color: #e74c3c;
             font-weight: bold;
             text-align: center;
+            margin-top: 30px;
         }
+
+        .loading {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #3498db;
+        }
+
+        .button-link {
+            display: block;
+            text-align: center;
+            background-color: #2980b9;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            margin-top: 20px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .button-link:hover {
+            background-color: #1c598d;
+            transform: scale(1.05);
+        }
+
+        .button-link:active {
+            background-color: #1a4c75;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .arbitrage-card {
+                padding: 15px;
+            }
+
+            .button-link {
+                font-size: 0.9rem;
+                padding: 10px 20px;
+            }
+        }
+
     </style>
 </head>
 <body>
 
-    <h1>Gate.io Tickers</h1>
+    <h1>A firma</h1>
 
     <div id="arbitrage-results" class="ticker-container">
         <!-- Os resultados de arbitragem serão exibidos aqui -->
@@ -82,11 +141,34 @@
 
     <div id="error-message" class="error"></div>
 
+    <div id="loading-message" class="loading">Carregando dados...</div>
+
     <!-- Incluir a biblioteca JQuery para facilitar a requisição AJAX -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        function openTwoWindows(link1, link2) {
+            // Obtém a largura e altura da tela do navegador
+            var screenWidth = window.innerWidth;
+            var screenHeight = window.innerHeight;
+
+            // Abrir a primeira janela com o primeiro link (à esquerda)
+            var window1 = window.open(link1, '_blank', 
+                'width=' + Math.floor(screenWidth / 2) + 
+                ', height=' + screenHeight + 
+                ', left=0, top=0');
+
+            // Abrir a segunda janela com o segundo link (à direita)
+            var window2 = window.open(link2, '_blank', 
+                'width=' + Math.floor(screenWidth / 2) + 
+                ', height=' + screenHeight + 
+                ', left=' + Math.floor(screenWidth / 2) + 
+                ', top=0');
+        }
+
         // Função para atualizar os dados da API
         function updateTickers() {
+            $('#loading-message').show(); // Exibe o carregando
+
             // Realiza as duas requisições AJAX de forma independente
             $.ajax({
                 url: 'get_gateio_tickers.php', // API Gate.io
@@ -106,46 +188,32 @@
                             if (responseMacx && typeof responseMacx === 'object' && responseMacx.data) {
                                 console.log("Estrutura da Macx:", responseMacx.data);
                                 
-                                // Criar um objeto onde a chave é o símbolo da Macx
                                 let macxData = {};
-
-                                // Se os dados da Macx estiverem dentro de 'data', pegamos os tickers corretamente
                                 let macxTickers = responseMacx.data;
 
-                                // Preencher o objeto com os dados da Macx
                                 macxTickers.forEach(function(tickerMacx) {
                                     let symbolMacx = tickerMacx.symbol.trim().toUpperCase();
-                                    macxData[symbolMacx] = tickerMacx; // O símbolo é a chave e o valor é o ticker completo
+                                    macxData[symbolMacx] = tickerMacx;
                                 });
 
-                                // Criar os resultados de arbitragem
                                 let arbitrageResultsHTML = '';
 
-                                // Agora, podemos percorrer a resposta da Gate.io e buscar diretamente no objeto da Macx
                                 responseGateio.forEach(function(tickerGateio) {
                                     let gateioSymbol = tickerGateio.currency_pair.trim().toUpperCase();
 
-                                    // Verifica se o símbolo da Gate.io está no objeto da Macx
                                     if (macxData[gateioSymbol]) {
                                         let buyGateio = tickerGateio.lowest_ask;
                                         let sellMacx = macxData[gateioSymbol].bid1;
                                         let base_volume = tickerGateio.base_volume;
                                         let volume24 = macxData[gateioSymbol].volume24;
 
-
-                                        // Calcula o lucro da arbitragem
                                         let profitGateioToMacx = sellMacx - buyGateio;
 
-                                        // Verifica se o lucro é positivo
                                         if (profitGateioToMacx > 0) {
                                             let arbitrageClassGateioToMacx = profitGateioToMacx > 0 ? 'positive' : 'negative';
-
-                                            // Calcula a porcentagem de lucro
                                             let profitPercentage = (profitGateioToMacx / buyGateio) * 100;
 
-                                            // Filtro de porcentagem: entre 0,3% e 20%
                                             if (profitPercentage >= 0.3 && profitPercentage <= 20) {
-                                                // Monta o HTML com os resultados da arbitragem (somente dentro da faixa de lucro)
                                                 arbitrageResultsHTML += `
                                                     <div class="arbitrage-card">
                                                         <div class="arbitrage-header">${tickerGateio.currency_pair}</div>
@@ -153,10 +221,11 @@
                                                             ${profitPercentage.toFixed(2)}%
                                                         </div>
                                                         <div class="arbitrage-body">
-                                                            <p>Compra na Gate.io: ${buyGateio} USDT</p>
-                                                            <p>Venda na Macx: ${sellMacx} USDT</p>
-                                                            <p>Volume Gate.io: ${base_volume} USDT</p>
-                                                            <p>Volume Macx: ${volume24} USDT</p>
+                                                            <p><strong>Compra na Gate.io:</strong> ${buyGateio} USDT</p>
+                                                            <p><strong>Venda na Macx:</strong> ${sellMacx} USDT</p>
+                                                            <p><strong>Volume Gate.io:</strong> ${base_volume} USDT</p>
+                                                            <p><strong>Volume Macx:</strong> ${volume24} USDT</p>
+                                                            <a href="javascript:void(0);" onclick="openTwoWindows('https://www.gate.io/pt-br/trade/${gateioSymbol}', 'https://futures.mexc.com/pt-PT/exchange/${gateioSymbol}')" class="button-link">Fazer Arbitragem</a>
                                                         </div>
                                                     </div>
                                                 `;
@@ -165,7 +234,6 @@
                                     }
                                 });
 
-                                // Exibe os resultados de arbitragem no HTML (somente positivos dentro da faixa de lucro)
                                 if (arbitrageResultsHTML) {
                                     $('#arbitrage-results').html(arbitrageResultsHTML);
                                 } else {
@@ -173,27 +241,25 @@
                                 }
                             } else {
                                 $('#error-message').html('Estrutura de dados da API Macx inesperada.');
-                                console.log('Resposta inesperada da API Macx:', responseMacx);
                             }
+
+                            $('#loading-message').hide(); // Oculta o carregando
                         },
                         error: function(xhr, status, error) {
                             $('#error-message').html('Erro ao carregar os dados da API Macx.');
-                            console.error('Erro na requisição da API Macx:', error);
+                            $('#loading-message').hide();
                         }
                     });
                 },
                 error: function(xhr, status, error) {
                     $('#error-message').html('Erro ao carregar os dados da API Gate.io.');
-                    console.error('Erro na requisição da API Gate.io:', error);
+                    $('#loading-message').hide();
                 }
             });
         }
 
-        // Chama a função updateTickers para carregar os dados da API ao carregar a página
         updateTickers();
-
-        // Atualiza os dados a cada 20 segundos (20000 milissegundos)
-        setInterval(updateTickers, 20000);
+        setInterval(updateTickers, 10000);
     </script>
 
 </body>
