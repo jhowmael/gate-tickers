@@ -127,6 +127,9 @@
         .button-link:active {
             background-color: #1a4c75;
         }
+        #finaciamento{
+            color : #e74c3c;
+        }
 
         /* Responsive design */
         @media (max-width: 768px) {

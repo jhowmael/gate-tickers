@@ -74,6 +74,7 @@
                                     let sellMacx = macxData[gateioSymbol].bid1;
                                     let base_volume = tickerGateio.base_volume;
                                     let volume24 = macxData[gateioSymbol].volume24;
+                                    let fundingRatpercentage = macxData[gateioSymbol].fundingRate*100;
 
                                     let profitGateioToMacx = sellMacx - buyGateio;
 
@@ -90,9 +91,10 @@
                                                     </div>
                                                     <div class="arbitrage-body">
                                                         <p><strong>Compra na Gate.io:</strong> ${buyGateio} USDT</p>
-                                                        <p><strong>Venda na Macx:</strong> ${sellMacx} USDT</p>
+                                                        <p><strong>Venda na Mecx :</strong> ${sellMacx} USDT</p>
                                                         <p><strong>Volume Gate.io:</strong> ${base_volume} USDT</p>
-                                                        <p><strong>Volume Macx:</strong> ${volume24} USDT</p>
+                                                        <p><strong>Volume Mecx:</strong> ${volume24} USDT</p>
+                                                        <p id="finaciamento"><strong>Mecx Taxa Finaciamento:</strong> ${fundingRatpercentage}%</p>
                                                         <a href="javascript:void(0);" onclick="openTwoWindows('https://www.gate.io/pt-br/trade/${gateioSymbol}', 'https://futures.mexc.com/pt-PT/exchange/${gateioSymbol}')" class="button-link">Fazer Arbitragem</a>
                                                     </div>
                                                 </div>
