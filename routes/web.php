@@ -22,3 +22,7 @@ Route::post('/logout', function () {
 
 Route::get('/get_gateio_tickers', [ApiController::class, 'getGateioTickers']);
 Route::get('/get_macx_tickersperpetuo', [ApiController::class, 'getMacxTickers']);
+Route::post('/save_arbitrage_data', 'ArbitrageController@saveArbitrageData')->name('arbitrage.saveData');
+Route::get('/arbitrage-saved', 'ArbitrageController@showSavedArbitrage')->name('arbitrage.saved');
+
+

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tickers</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
-    <script src="https://kit.fontawesome.com/821b65200f.js" crossorigin="anonymous"></script>
+     <script src="https://kit.fontawesome.com/821b65200f.js" crossorigin="anonymous"></script>
     <style>
         /* Estilo para garantir que o rodapé fique no final da tela */
         html,
@@ -42,9 +42,21 @@
             gap: 20px;
             padding: 20px;
         }
+    .card{
+        background-color: rgba(33, 37, 41);
+        color:rgb(255, 255, 255);
 
+        }
+    .card-body{
+
+        color : white;
+    }
+        .btn {
+            margin-top : 10px;
+
+        }
         .arbitrage-card {
-            background-color: #ffffff;
+            background-color: rgba(33, 37, 41);
             border-radius: 8px;
             padding: 25px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -60,7 +72,7 @@
         .arbitrage-header {
             font-size: 1.5rem;
             font-weight: 700;
-            color: #34495e;
+            color:rgb(255, 255, 255);
             margin-bottom: 15px;
         }
 
@@ -122,6 +134,7 @@
         .button-link:hover {
             background-color: #1c598d;
             transform: scale(1.05);
+            color: white;
         }
 
         .button-link:active {
