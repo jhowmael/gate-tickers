@@ -102,7 +102,6 @@
                     alert('Preços atualizados com sucesso!');
 
                     // Chama a função para atualizar os dados de preços
-                    const clickedCurrencyPair = sessionStorage.getItem('clickedCurrencyPair');
                     updateTickers(clickedCurrencyPair, updatedBuyPrice, updatedSellPrice);
                 } else {
                     // Alerta caso os valores não sejam válidos
@@ -116,7 +115,7 @@
             });
         };
 
-        async function updateTickers(currencyPair, buyPriceEntry, sellPriceEntry) {
+       async function updateTickers(currencyPair, buyPriceEntry, sellPriceEntry) {
             $('#loading-message').show();
 
             try {
@@ -222,8 +221,16 @@
             document.getElementById('arbitrageResult').textContent = '';
         }
 
-        updateTickers();
-        setInterval(updateTickers, 5000);
+        // Inicializa a primeira chamada de updateTickers com os valores do sessionStorage
+        setInterval(() => {
+            const clickedCurrencyPair = sessionStorage.getItem('clickedCurrencyPair');
+            const buyPriceEntry = parseFloat(sessionStorage.getItem('buyPrice'));
+            const sellPriceEntry = parseFloat(sessionStorage.getItem('sellPrice'));
+
+            if (clickedCurrencyPair) {
+                updateTickers(clickedCurrencyPair, buyPriceEntry, sellPriceEntry);
+            }
+        }, 10000); // Atualização a cada 10 segundos
     </script>
 
     <style>
